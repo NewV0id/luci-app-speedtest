@@ -1,0 +1,6 @@
+#!/bin/sh
+rm -f /www/speedtest-results.csv /www/speedtest-wg-results.csv
+rm -f /tmp/speedtest-bb.lock /tmp/speedtest-wg.lock \
+      /tmp/speedtest-bb.child /tmp/speedtest-wg.child
+echo "luci-app-speedtest removed. CSV data in /root/website/ preserved."
+exit 0

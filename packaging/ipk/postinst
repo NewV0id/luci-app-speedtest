@@ -1,0 +1,37 @@
+#!/bin/sh
+
+HEADER="timestamp,server,latency_ms,jitter_ms,packet_loss,download_mbps,upload_mbps,result_url"
+
+mkdir -p /root/website
+
+for f in /root/website/speedtest-results.csv /root/website/speedtest-wg-results.csv; do
+    [ -f "$f" ] || echo "$HEADER" > "$f"
+done
+
+# Remove the world-readable symlinks earlier versions created: the results
+# are now served by /cgi-bin/get-results.cgi behind a LuCI session check.
+rm -f /www/speedtest-results.csv /www/speedtest-wg-results.csv
+
+# Clear locks left behind by the previous version
+rm -f /tmp/speedtest-bb.lock /tmp/speedtest-wg.lock /tmp/speedtest.lock \
+      /tmp/speedtest-bb.child /tmp/speedtest-wg.child
+
+# Reload rpcd so the ACL is picked up
+/etc/init.d/rpcd reload 2>/dev/null || true
+
+echo ""
+echo "======================================================"
+echo " luci-app-speedtest @VERSION@ installed"
+echo " Open: LuCI -> Status -> Speedtest"
+echo ""
+echo " Settings now live in /etc/speedtest.conf (server IDs,"
+echo " timeouts, retention). It is a conffile, so your edits"
+echo " will survive future upgrades."
+echo ""
+echo " PREREQUISITE: Ookla CLI at /root/speedtest"
+echo "   cd /root"
+echo "   wget -qO st.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-aarch64.tgz"
+echo "   tar -xzf st.tgz speedtest && chmod +x /root/speedtest && rm st.tgz"
+echo "======================================================"
+
+exit 0

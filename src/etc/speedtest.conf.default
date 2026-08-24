@@ -1,0 +1,36 @@
+# /etc/speedtest.conf — luci-app-speedtest settings
+#
+# This file is registered as a conffile: opkg will NOT overwrite your
+# edits when the package is upgraded.
+
+# ── Server selection ────────────────────────────────────────────────────────
+# Space-separated Ookla server IDs. Leave EMPTY ("") to let the CLI pick the
+# best server automatically - that is the right default for most people.
+#
+# Pinning IDs is worth doing if auto-selection keeps landing on a congested
+# server, or if you want a consistent reference point across months of history.
+# One ID is picked at random per run. List candidates with:
+#   HOME=/root /root/speedtest --servers
+BB_SERVERS=""
+
+# Same, for tests through the tunnel. Auto-selection is usually the better
+# choice here: VPN providers often block or throttle specific Ookla endpoints,
+# and a pinned ID that stops responding shows up as repeated timeouts.
+# To list what is reachable through the tunnel:
+#   HOME=/root /root/speedtest --servers -i <wg-client-ip>
+WG_SERVERS=""
+
+# ── Interface ───────────────────────────────────────────────────────────────
+WG_IFACE="wgclient1"
+
+# ── Limits ──────────────────────────────────────────────────────────────────
+MAX_ROWS=200          # CSV data rows retained (header always kept)
+MAX_LOG_LINES=200     # lines retained in /tmp/speedtest-*.log
+BB_TIMEOUT=90         # seconds before the broadband test is killed
+WG_TIMEOUT=120        # seconds before the VPN test is killed
+
+# ── Security ────────────────────────────────────────────────────────────────
+# 1 = CGI endpoints require a valid LuCI session cookie (recommended).
+# 0 = no authentication. Only set to 0 if session validation misbehaves on
+#     your build; check /tmp/speedtest-cgi.log for the reason first.
+ST_AUTH=1

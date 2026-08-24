@@ -1,0 +1,12 @@
+Package: luci-app-speedtest
+Version: 1.0.0
+Depends: uhttpd, luci-base, rpcd, ubus
+Section: luci
+Category: LuCI
+Architecture: all
+Installed-Size: 270894
+Maintainer: Void
+Description: Speedtest dashboard for LuCI.
+ Adds a Status -> Speedtest page that runs the Ookla CLI against broadband
+ and through a WireGuard tunnel, logging both to CSV and plotting download,
+ upload, latency, jitter and packet loss.

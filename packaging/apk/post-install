@@ -1,0 +1,46 @@
+#!/bin/sh
+
+HEADER="timestamp,server,latency_ms,jitter_ms,packet_loss,download_mbps,upload_mbps,result_url"
+
+mkdir -p /root/website
+
+for f in /root/website/speedtest-results.csv /root/website/speedtest-wg-results.csv; do
+    [ -f "$f" ] || echo "$HEADER" > "$f"
+done
+
+# Seed the config only if it isn't already there, so hand-picked server lists
+# survive upgrades. The package owns speedtest.conf.default, never the live
+# file - that way no package-manager conffile semantics are relied upon.
+if [ -f /etc/speedtest.conf ]; then
+    if ! cmp -s /etc/speedtest.conf /etc/speedtest.conf.default; then
+        echo " NOTE: keeping your /etc/speedtest.conf"
+        echo "       new defaults are in /etc/speedtest.conf.default"
+    fi
+else
+    cp /etc/speedtest.conf.default /etc/speedtest.conf
+fi
+
+# Remove the world-readable symlinks earlier versions created: the results
+# are now served by /cgi-bin/get-results.cgi behind a LuCI session check.
+rm -f /www/speedtest-results.csv /www/speedtest-wg-results.csv
+
+rm -f /tmp/speedtest-bb.lock /tmp/speedtest-wg.lock /tmp/speedtest.lock \
+      /tmp/speedtest-bb.child /tmp/speedtest-wg.child
+
+/etc/init.d/rpcd reload 2>/dev/null || true
+
+echo ""
+echo "======================================================"
+echo " luci-app-speedtest @VERSION@ installed"
+echo " Open: LuCI -> Status -> Speedtest"
+echo ""
+echo " Settings: /etc/speedtest.conf (server IDs, timeouts,"
+echo " retention). Your edits are preserved across upgrades."
+echo ""
+echo " PREREQUISITE: Ookla CLI at /root/speedtest"
+echo "   cd /root"
+echo "   wget -qO st.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-linux-aarch64.tgz"
+echo "   tar -xzf st.tgz speedtest && chmod +x /root/speedtest && rm st.tgz"
+echo "======================================================"
+
+exit 0

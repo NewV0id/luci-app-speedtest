@@ -1,0 +1,8 @@
+{
+	"luci-app-speedtest": {
+		"description": "Grant access to the Speedtest dashboard",
+		"read": {
+			"cgi-io": [ "run-speedtest", "clear-results" ]
+		}
+	}
+}
