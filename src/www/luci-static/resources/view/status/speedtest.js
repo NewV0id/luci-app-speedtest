@@ -921,9 +921,19 @@ return view.extend({
                 var isErr = newest && /^(ERROR|TIMEOUT)/.test(newest[1]);
                 if (isErr) {
                   var svrInfo = newest[1].replace(/^(?:ERROR|TIMEOUT)\s*/, '');
-                  var errMsg = /^TIMEOUT/.test(newest[1])
-                    ? '⚠ Speedtest timed out' + (svrInfo ? ' (' + svrInfo + ')' : '') + ' — VPN interface may be down.'
-                    : '⚠ Speedtest failed' + (svrInfo ? ' (' + svrInfo + ')' : '') + ' — server unreachable. Try again.';
+                  var errMsg;
+                  if (/\[no-wg-ip\]/.test(newest[1])) {
+                    // Not a network failure - the test never ran.
+                    errMsg = '⚠ No WireGuard interface has an IP address. '
+                           + 'Is the tunnel connected? If it is, set WG_IFACE in '
+                           + '/etc/speedtest.conf to the right interface name.';
+                  } else if (/^TIMEOUT/.test(newest[1])) {
+                    errMsg = '⚠ Speedtest timed out' + (svrInfo ? ' (' + svrInfo + ')' : '')
+                           + ' — the server may be unreachable on this connection.';
+                  } else {
+                    errMsg = '⚠ Speedtest failed' + (svrInfo ? ' (' + svrInfo + ')' : '')
+                           + ' — see /tmp/speedtest-wg-cgi.log for the reason.';
+                  }
                   setStatus(errMsg, 'error');
                 } else {
                   setStatus('✓ Test complete — charts updated!', 'success');

@@ -2,6 +2,16 @@
 
 Notable changes to this project. Newest first.
 
+## 1.0.1
+
+- Detect the WireGuard interface automatically when the configured `WG_IFACE`
+  has no IPv4 address. The name varies across firmware (GL.iNet uses
+  `wgclient1` on some builds and `wgclient2` on others), which made VPN tests
+  fail out of the box on affected routers. `WG_IFACE` is now an override for
+  multi-tunnel setups rather than something you must get right.
+- Report a missing VPN address as what it is, instead of "server unreachable" —
+  in that case the test never ran at all.
+
 ## 1.0.0
 
 First public release.

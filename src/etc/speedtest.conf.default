@@ -21,6 +21,11 @@ BB_SERVERS=""
 WG_SERVERS=""
 
 # ── Interface ───────────────────────────────────────────────────────────────
+# WireGuard interface to bind VPN tests to. If this name has no IPv4 address,
+# any WireGuard interface that does have one is used instead — so you only need
+# to set this when you run more than one tunnel and want a specific one.
+# GL.iNet firmware uses wgclient1 on some builds and wgclient2 on others.
+# Check with:  ip link show type wireguard
 WG_IFACE="wgclient1"
 
 # ── Limits ──────────────────────────────────────────────────────────────────

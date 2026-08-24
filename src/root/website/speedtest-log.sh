@@ -47,15 +47,53 @@ trap cleanup EXIT INT TERM
 # ── Bind address (VPN only) ─────────────────────────────────────────────────
 BIND_OPT=""
 if [ "$WG" = "1" ]; then
-    # Detect the WG client's actual local IP rather than assuming a fixed
-    # address - this differs per router/VPN session. Ookla's CLI fails to
-    # bind if the IP passed to -i isn't assigned to a local interface.
-    WG_IP=$(ip -4 addr show "$WG_IFACE" 2>/dev/null | awk '/inet /{print $2; exit}' | cut -d/ -f1)
+    # Detect the WG client's local IP. Ookla's CLI fails to bind if the
+    # address passed to -i isn't assigned to a local interface.
+    #
+    # The interface name is not consistent across firmware: GL.iNet uses
+    # wgclient1 on some builds and wgclient2 on others, and a second tunnel
+    # shifts the numbering again. So the configured name is tried first, then
+    # any WireGuard interface that actually has an IPv4 address. WG_IFACE is
+    # therefore an override for multi-tunnel setups rather than a requirement.
+    iface_ip() {
+        ip -4 addr show "$1" 2>/dev/null | awk '/inet /{print $2; exit}' | cut -d/ -f1
+    }
+
+    # List WireGuard interfaces. Three methods because none is universally
+    # available: wg(8) may not be installed, busybox ip may not support
+    # "type wireguard", and sysfs DEVTYPE depends on the kernel module.
+    wg_interfaces() {
+        wg show interfaces 2>/dev/null | tr ' ' '\n'
+        ip -o link show type wireguard 2>/dev/null | awk -F': ' '{print $2}'
+        for _d in /sys/class/net/*; do
+            [ -r "$_d/uevent" ] || continue
+            grep -q '^DEVTYPE=wireguard$' "$_d/uevent" 2>/dev/null && echo "${_d##*/}"
+        done
+    }
+
+    WG_IP=$(iface_ip "$WG_IFACE")
+
+    if [ -z "$WG_IP" ]; then
+        for _if in $(wg_interfaces | grep -v '^$' | sort -u); do
+            _ip=$(iface_ip "$_if")
+            if [ -n "$_ip" ]; then
+                log "note: $WG_IFACE has no IPv4 address, using $_if instead"
+                WG_IFACE="$_if"
+                WG_IP="$_ip"
+                break
+            fi
+        done
+    fi
+
     if [ -z "$WG_IP" ]; then
         record "ERROR [no-wg-ip]"
-        log "ERROR: $WG_IFACE has no IPv4 address (interface down or not configured)"
+        _found=$(wg_interfaces | grep -v '^$' | sort -u | tr '\n' ' ')
+        log "ERROR: no WireGuard interface has an IPv4 address."
+        log "       configured WG_IFACE=$WG_IFACE; interfaces present: ${_found:-none}"
+        log "       Is the tunnel connected? Set WG_IFACE in /etc/speedtest.conf."
         exit 1
     fi
+
     BIND_OPT="-i $WG_IP"
 fi
 

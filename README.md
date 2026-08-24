@@ -47,10 +47,10 @@ Download the file matching your OpenWrt version from
 
 ```sh
 # OpenWrt 21.02 - 24.10
-opkg install ./luci-app-speedtest_1.0.0_all.ipk
+opkg install ./luci-app-speedtest_1.0.1_all.ipk
 
 # OpenWrt 25.12 and newer
-apk add --allow-untrusted ./luci-app-speedtest-1.0.0-r1.apk
+apk add --allow-untrusted ./luci-app-speedtest-1.0.1-r1.apk
 ```
 
 `--allow-untrusted` is needed because the package isn't signed with a key your
@@ -87,7 +87,7 @@ on `.ipk` it's registered as a conffile, and on `.apk` the package owns
 ```sh
 BB_SERVERS=""              # Ookla server IDs; empty "" = auto-select
 WG_SERVERS=""              # same, for tests through the tunnel
-WG_IFACE="wgclient1"       # your WireGuard interface name
+WG_IFACE="wgclient1"       # override; auto-detected if this has no IP
 MAX_ROWS=200               # CSV rows kept per connection
 MAX_LOG_LINES=200
 BB_TIMEOUT=90              # seconds before a broadband test is killed
@@ -216,8 +216,10 @@ Then check `/tmp/speedtest-cgi.log`.
 `HOME=/root /root/speedtest --accept-license --accept-gdpr`. Nine times out of
 ten the licence hasn't been accepted, or the binary is the wrong architecture.
 
-**VPN tests record `ERROR [no-wg-ip]`** — the interface named in `WG_IFACE`
-has no IPv4 address. Confirm with `ip -4 addr show wgclient1`.
+**VPN tests record `ERROR [no-wg-ip]`** — no WireGuard interface has an IPv4
+address, so there was nothing to bind the test to. Usually the tunnel simply
+isn't connected. List what exists with `ip link show type wireguard`; if an
+interface is up and addressed but still not used, set `WG_IFACE` to its name.
 
 **VPN tests time out against specific servers** — many VPN providers block or
 throttle particular Ookla endpoints. Set `WG_SERVERS=""` to auto-select.
@@ -236,6 +238,3 @@ GPL-2.0. Chart.js is bundled under the MIT licence.
 
 The Ookla Speedtest CLI is **not** included and is not covered by this licence —
 it's proprietary software with its own terms, which you accept when you run it.
-
-<img width="879" height="1188" alt="Screenshot 2026-08-24 162255" src="https://github.com/user-attachments/assets/9b7a02a4-1256-4928-b108-04585244e186" />
-
