@@ -118,7 +118,7 @@ def gz(payload):
 
 def main():
     ap = argparse.ArgumentParser(description="Build an OpenWrt .apk package.")
-    ap.add_argument("--version", required=True, help="e.g. 1.0.1-r1")
+    ap.add_argument("--version", required=True, help="e.g. 1.0.2-r1")
     ap.add_argument("--data", default="data", help="payload tree")
     ap.add_argument("--control", default="ctl", help="lifecycle scripts")
     ap.add_argument("--output", required=True)

@@ -1,5 +1,5 @@
 Package: luci-app-speedtest
-Version: 1.0.1
+Version: 1.0.2
 Depends: uhttpd, luci-base, rpcd, ubus
 Section: luci
 Category: LuCI

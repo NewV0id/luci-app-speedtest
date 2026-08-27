@@ -47,10 +47,10 @@ Download the file matching your OpenWrt version from
 
 ```sh
 # OpenWrt 21.02 - 24.10
-opkg install ./luci-app-speedtest_1.0.1_all.ipk
+opkg install ./luci-app-speedtest_1.0.2_all.ipk
 
 # OpenWrt 25.12 and newer
-apk add --allow-untrusted ./luci-app-speedtest-1.0.1-r1.apk
+apk add --allow-untrusted ./luci-app-speedtest-1.0.2-r1.apk
 ```
 
 `--allow-untrusted` is needed because the package isn't signed with a key your

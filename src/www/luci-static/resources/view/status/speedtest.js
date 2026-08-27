@@ -109,7 +109,7 @@ document.head.append(Object.assign(document.createElement('style'), { textConten
     --st-blue:    #1a5fd6;
     --st-orange:  #cc5200;
     --st-purple:  #8a00c8;
-    --st-muted:   #94a3b8;
+    --st-muted:   #64748b;
     --st-text:    #111827;
     --st-subtext: #4b5573;
     --st-thead:   rgba(0,0,0,0.05);
@@ -120,16 +120,17 @@ document.head.append(Object.assign(document.createElement('style'), { textConten
     --st-so-bg:  #e8fff2; --st-so-bd: #6ed4a0; --st-so-tx: #00a355;
     --st-se-bg:  #fff0f0; --st-se-bd: #f5a0a0; --st-se-tx: #c42b2b;
   }
-  :root[data-darkmode="true"] {
+  :root[data-darkmode="true"],
+  :root[data-st-dark="true"] {
     --st-surface: rgba(255,255,255,0.04);
     --st-border:  rgba(255,255,255,0.10);
     --st-green:   #00e676;
     --st-blue:    #2979ff;
     --st-orange:  #ff9100;
     --st-purple:  #d500f9;
-    --st-muted:   #4a5568;
+    --st-muted:   #8794ab;
     --st-text:    #e2e8f0;
-    --st-subtext: #718096;
+    --st-subtext: #a8b3c7;
     --st-thead:   rgba(0,0,0,0.25);
     --st-row-hover: rgba(255,255,255,0.04);
     --st-modal-bg:  rgba(10,12,16,0.92);
@@ -357,15 +358,49 @@ function parseCsv(text) {
     .filter(function(p) { return p.length >= 7; });
 }
 
-function isDark() {
-  return document.documentElement.getAttribute('data-darkmode') === 'true';
+// Theme detection.
+//
+// data-darkmode is set by some LuCI themes but by no means all - the stock
+// OpenWrt dark theme doesn't set it, which previously left the light palette
+// (near-black text) rendering on a dark background. So fall back to measuring
+// the page's actual background luminance, which works whatever the theme does,
+// and only then to the OS preference.
+function stIsDark() {
+  var flag = document.documentElement.getAttribute('data-darkmode');
+  if (flag === 'true') return true;
+  if (flag === 'false') return false;
+
+  var el = document.body || document.documentElement;
+  while (el) {
+    var bg = window.getComputedStyle(el).backgroundColor || '';
+    var m = /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/.exec(bg);
+    if (m && (m[4] === undefined || parseFloat(m[4]) > 0.1)) {
+      // Rec. 709 luma; good enough to tell light from dark.
+      var luma = (0.2126 * +m[1] + 0.7152 * +m[2] + 0.0722 * +m[3]) / 255;
+      return luma < 0.5;
+    }
+    el = el.parentElement;
+  }
+
+  try {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  } catch (e) {
+    return false;
+  }
 }
+
+// Publish the result so the stylesheet can key off it.
+function stApplyTheme() {
+  document.documentElement.setAttribute('data-st-dark', stIsDark() ? 'true' : 'false');
+}
+
+function isDark() { return stIsDark(); }
 
 function chartColors() {
   var dark = isDark();
   return {
     grid:   dark ? 'rgba(30,37,51,0.9)'  : 'rgba(220,226,240,0.9)',
-    tick:   dark ? '#4a5568' : '#4b5573',
+    tick:   dark ? '#8794ab' : '#4b5573',
     legend: dark ? '#a0aec0' : '#4b5573',
     tip_bg: dark ? '#10141c' : '#ffffff',
     tip_bd: dark ? '#1e2533' : '#dde2ee',
@@ -736,6 +771,8 @@ return view.extend({
 
 
   render: function(data) {
+    // Resolve light/dark before building the DOM, so the first paint is right.
+    stApplyTheme();
     var self = this;
 
     var root = E('div', { class:'st-root' });
@@ -791,6 +828,17 @@ return view.extend({
       }
     }
     initCharts();
+
+    // Some LuCI themes toggle dark mode without a reload.
+    if (!window._stThemeWatch) {
+      window._stThemeWatch = true;
+      new MutationObserver(stApplyTheme).observe(document.documentElement,
+        { attributes: true, attributeFilter: ['data-darkmode', 'class'] });
+      try {
+        window.matchMedia('(prefers-color-scheme: dark)')
+              .addEventListener('change', stApplyTheme);
+      } catch (e) {}
+    }
 
     // ── Sort buttons ──────────────────────────────────────────────────────
     root.querySelectorAll('.bb-sb').forEach(function(btn) {

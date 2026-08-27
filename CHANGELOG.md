@@ -2,6 +2,17 @@
 
 Notable changes to this project. Newest first.
 
+## 1.0.2
+
+- Fix unreadable text on dark LuCI themes. Theme detection relied on the
+  `data-darkmode` attribute, which the stock OpenWrt dark theme doesn't set, so
+  the light palette (near-black text) was rendering on a dark background.
+  Detection now measures the page's actual background luminance and falls back
+  to the OS preference, so it works whatever the theme does, and follows a
+  theme switch without a reload.
+- Raise contrast of muted and secondary text. Three colours were below the
+  WCAG AA 4.5:1 threshold — worst was 2.29:1 — in both palettes.
+
 ## 1.0.1
 
 - Detect the WireGuard interface automatically when the configured `WG_IFACE`
