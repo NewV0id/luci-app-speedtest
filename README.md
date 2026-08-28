@@ -47,10 +47,10 @@ Download the file matching your OpenWrt version from
 
 ```sh
 # OpenWrt 21.02 - 24.10
-opkg install ./luci-app-speedtest_1.0.2_all.ipk
+opkg install ./luci-app-speedtest_1.0.6_all.ipk
 
 # OpenWrt 25.12 and newer
-apk add --allow-untrusted ./luci-app-speedtest-1.0.2-r1.apk
+apk add --allow-untrusted ./luci-app-speedtest-1.0.6-r1.apk
 ```
 
 `--allow-untrusted` is needed because the package isn't signed with a key your
@@ -238,5 +238,3 @@ GPL-2.0. Chart.js is bundled under the MIT licence.
 
 The Ookla Speedtest CLI is **not** included and is not covered by this licence —
 it's proprietary software with its own terms, which you accept when you run it.
-
-<img width="1118" height="1224" alt="image" src="https://github.com/user-attachments/assets/28292e2b-3d13-45a9-a232-be032a98a2a3" />

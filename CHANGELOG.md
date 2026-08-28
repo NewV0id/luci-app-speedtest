@@ -2,6 +2,37 @@
 
 Notable changes to this project. Newest first.
 
+## 1.0.6
+
+- Fix the "Clear both" button rendering as solid red with invisible text on
+  some themes. Seven class names (`danger`, `cancel`, `dl`, `ul`, `lat`,
+  `jit`, `srv`) were generic enough for a LuCI theme's own CSS to match them.
+  All are now `st-` prefixed, and the modal buttons pin their background so no
+  outside rule can repaint them.
+
+## 1.0.5
+
+- Reclaim wasted space in the chart panels. The series legend now sits on the
+  panel's title line instead of inside the canvas, where Chart.js was reserving
+  about a quarter of the plot area for it. Charts that plot a single series
+  drop the legend entirely, since the panel title already names it. Net effect:
+  plots are ~18% taller while each panel is 16px shorter.
+
+## 1.0.4
+
+- Fix the action buttons disappearing behind the new header on some themes.
+  The header used a `<header>` element, and LuCI themes style bare semantic
+  tags for their own page chrome — on the GL.iNet theme that gave it fixed
+  positioning, covering the button row. It's a plain div now, with the
+  properties that matter pinned so no theme can restyle it.
+
+## 1.0.3
+
+- Add a page header with a title and icon. The action buttons previously sat
+  flush against the theme's navigation bar with nothing identifying the page.
+- Move the last-run timestamps into the header, so the button row holds only
+  actions.
+
 ## 1.0.2
 
 - Fix unreadable text on dark LuCI themes. Theme detection relied on the

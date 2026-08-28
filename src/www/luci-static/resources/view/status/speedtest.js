@@ -141,14 +141,38 @@ document.head.append(Object.assign(document.createElement('style'), { textConten
   }
 
   /* ── Layout ──────────────────────────────────────────────────── */
-  .st-root { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+  .st-root { font-family: 'Space Grotesk', 'Inter', sans-serif; padding-top: 1rem; }
+
+  /* Header band: what this is, and how fresh the numbers are. */
+  .st-head {
+    /* Defensive: themes style their own page chrome, and anything we inherit
+       here would sit on top of the button row. */
+    position: static; width: auto; background: none; box-shadow: none;
+    display: flex; align-items: center; gap: 0.6rem;
+    padding-bottom: 0.7rem; margin-bottom: 1rem;
+    border-bottom: 1px solid var(--st-border);
+    flex-wrap: wrap;
+  }
+  .st-title {
+    margin: 0; padding: 0; border: 0; background: none;
+    font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em;
+    color: var(--st-text); line-height: 1.2;
+    font-family: 'Space Grotesk', 'Inter', sans-serif; text-transform: none;
+  }
+  .st-logo { width: 26px; height: 26px; flex: none; fill: none;
+    stroke-linecap: round; }
+  .st-logo-track  { stroke: var(--st-muted); stroke-width: 2.4; opacity: 0.4; }
+  .st-logo-arc    { stroke: var(--st-green); stroke-width: 2.4; }
+  .st-logo-needle { stroke: var(--st-text);  stroke-width: 2; }
+  .st-logo-hub    { fill: var(--st-text); stroke: none; }
 
   .st-toolbar {
     display: flex; align-items: center; gap: 0.6rem;
     margin-bottom: 1.25rem; flex-wrap: wrap;
   }
   .st-last { font-size: 0.72rem; color: var(--st-subtext);
-    font-family: 'JetBrains Mono', monospace; margin-left: auto; }
+    font-family: 'JetBrains Mono', monospace; }
+  .st-head .st-last:not(#wg-last) { margin-left: auto; }
 
   /* buttons */
   .st-btn {
@@ -189,21 +213,28 @@ document.head.append(Object.assign(document.createElement('style'), { textConten
   .st-card .st-val { font-family:'JetBrains Mono',monospace; font-size:0.95rem;
     font-weight:700; line-height:1; }
   .st-card .st-unit { font-size:0.72rem; font-weight:400; color:var(--st-subtext); margin-left:2px; }
-  .st-card.dl .st-val { color:var(--st-green); }
-  .st-card.ul .st-val { color:var(--st-blue);  }
-  .st-card.lat .st-val { color:var(--st-orange); }
-  .st-card.jit .st-val { color:var(--st-purple); }
-  .st-card.srv { grid-column:1/-1; display:flex; align-items:center;
+  .st-card.st-dl .st-val { color:var(--st-green); }
+  .st-card.st-ul .st-val { color:var(--st-blue);  }
+  .st-card.st-lat .st-val { color:var(--st-orange); }
+  .st-card.st-jit .st-val { color:var(--st-purple); }
+  .st-card.st-srv { grid-column:1/-1; display:flex; align-items:center;
     gap:1rem; padding:0.38rem 0.85rem; }
-  .st-card.srv .st-val { font-size:0.9rem; color:var(--st-text);
+  .st-card.st-srv .st-val { font-size:0.9rem; color:var(--st-text);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
   /* chart sections */
   .st-chart-sec { background:var(--st-surface); border:1px solid var(--st-border);
     border-radius:12px; padding:0.5rem 0.75rem; margin-bottom:0.5rem; }
   .st-chart-sec h3 { font-size:0.6rem; text-transform:uppercase; letter-spacing:2px;
-    color:var(--st-subtext); margin:0 0 0.35rem; font-weight:600; }
-  .st-chart-wrap { position:relative; height:115px; }
+    color:var(--st-subtext); margin:0; font-weight:600; }
+  .st-chart-hd { display:flex; align-items:baseline; justify-content:space-between;
+    gap:0.75rem; margin:0 0 0.3rem; flex-wrap:wrap; }
+  .st-lg { display:flex; align-items:center; gap:0.7rem; flex-wrap:wrap; }
+  .st-lg-item { display:inline-flex; align-items:center; gap:0.3rem;
+    font-family:'JetBrains Mono',monospace; font-size:0.62rem;
+    color:var(--st-subtext); white-space:nowrap; }
+  .st-lg-item i { width:9px; height:9px; border-radius:2px; flex:none; }
+  .st-chart-wrap { position:relative; height:100px; }
   .st-chart-row { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:0.5rem; }
   .st-chart-row .st-chart-sec { margin-bottom:0; }
   @media(max-width:640px){ .st-chart-row { grid-template-columns:1fr; } }
@@ -272,9 +303,9 @@ document.head.append(Object.assign(document.createElement('style'), { textConten
     padding:0.55rem 0.9rem; border-radius:6px; cursor:pointer;
     transition:background 0.15s, border-color 0.15s; text-align:left; }
   .st-modal-opt:hover { background:var(--st-row-hover); border-color:var(--st-muted); }
-  .st-modal-opt.danger { border-color:rgba(244,67,54,0.4); color:#f66; }
-  .st-modal-opt.danger:hover { background:var(--st-se-bg); border-color:#f44336; }
-  .st-modal-opt.cancel { color:var(--st-subtext); }
+  .st-modal-opt.st-danger { background:transparent; border-color:rgba(244,67,54,0.4); color:#f66; }
+  .st-modal-opt.st-danger:hover { background:var(--st-se-bg); border-color:#f44336; }
+  .st-modal-opt.st-cancel { background:transparent; color:var(--st-subtext); }
 
   /* ── Mobile optimisations ────────────────────────────────────── */
   @media (max-width: 600px) {
@@ -292,12 +323,12 @@ document.head.append(Object.assign(document.createElement('style'), { textConten
 
     /* Stat cards: 2-column grid */
     .st-cards { grid-template-columns: repeat(2, 1fr); }
-    .st-card.srv { grid-column: 1 / -1; }
+    .st-card.st-srv { grid-column: 1 / -1; }
     .st-card .st-val { font-size: 0.85rem; }
     .st-card .st-lbl { font-size: 0.57rem; }
 
     /* Charts */
-    .st-chart-wrap { height: 120px; }
+    .st-chart-wrap { height: 108px; }
 
     /* Results table — force proper table display, override LuCI responsive CSS */
     .st-results-body { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
@@ -483,7 +514,7 @@ function makeChart(canvasId, datasets, serverArr, suggestedMax) {
     interaction: { mode:'index', intersect:false },
     animation: { duration: 350 },
     plugins: {
-      legend: { labels: { color:c.legend, font:{family:'JetBrains Mono',size:11}, boxWidth:22, padding:14 } },
+      legend: { display: false },
       tooltip: {
         backgroundColor:c.tip_bg, borderColor:c.tip_bd, borderWidth:1,
         titleColor:'#e2e8f0', bodyColor:'#a0aec0',
@@ -557,6 +588,23 @@ function buildHtml() {
       +'<button class="st-sort-btn '+prefix+'" data-col="'+col+'" data-dir="'+d[1]+'">'+(d[1]==='desc'?'↓':'↑')+'</button>'
       +'</span>';
   }
+  // Chart panel. The series legend sits on the title line rather than inside
+  // the canvas: Chart.js reserves roughly a quarter of a 115px panel for it,
+  // which is why the plots looked stranded. Single-series charts get no legend
+  // at all - the panel title already names the series.
+  function chartSec(title, canvasId, series) {
+    var chips = (series || []).map(function(sr) {
+      return '<span class="st-lg-item"><i style="background:' + sr[1] + '"></i>'
+           + escHtml(sr[0]) + '</span>';
+    }).join('');
+    return '<div class="st-chart-sec">'
+      +'<div class="st-chart-hd"><h3>' + escHtml(title) + '</h3>'
+      + (chips ? '<span class="st-lg">' + chips + '</span>' : '')
+      +'</div>'
+      +'<div class="st-chart-wrap"><canvas id="' + canvasId + '"></canvas></div>'
+      +'</div>';
+  }
+
   function resultsTable(prefix) {
     return '<div class="st-results-sec">'
       +'<button class="st-toggle" id="'+prefix+'-toggle">'
@@ -579,17 +627,17 @@ function buildHtml() {
   }
   function statsCards(prefix) {
     return '<div class="st-cards">'
-      +'<div class="st-card dl"><div class="st-lbl">Download</div><div class="st-val" id="'+prefix+'-dl">—<span class="st-unit">Mbps</span></div></div>'
-      +'<div class="st-card ul"><div class="st-lbl">Upload</div><div class="st-val" id="'+prefix+'-ul">—<span class="st-unit">Mbps</span></div></div>'
-      +'<div class="st-card lat"><div class="st-lbl">Latency</div><div class="st-val" id="'+prefix+'-lat">—<span class="st-unit">ms</span></div></div>'
-      +'<div class="st-card jit"><div class="st-lbl">Jitter</div><div class="st-val" id="'+prefix+'-jit">—<span class="st-unit">ms</span></div></div>'
+      +'<div class="st-card st-dl"><div class="st-lbl">Download</div><div class="st-val" id="'+prefix+'-dl">—<span class="st-unit">Mbps</span></div></div>'
+      +'<div class="st-card st-ul"><div class="st-lbl">Upload</div><div class="st-val" id="'+prefix+'-ul">—<span class="st-unit">Mbps</span></div></div>'
+      +'<div class="st-card st-lat"><div class="st-lbl">Latency</div><div class="st-val" id="'+prefix+'-lat">—<span class="st-unit">ms</span></div></div>'
+      +'<div class="st-card st-jit"><div class="st-lbl">Jitter</div><div class="st-val" id="'+prefix+'-jit">—<span class="st-unit">ms</span></div></div>'
       +'<div class="st-card"><div class="st-lbl">Peak DL</div><div class="st-val" id="'+prefix+'-pk-dl" style="color:var(--st-green)">—<span class="st-unit">Mbps</span></div>'
       +'<div class="st-lbl" style="margin-top:0.4rem">Lowest DL</div><div class="st-val" id="'+prefix+'-lo-dl" style="color:var(--st-muted)">—<span class="st-unit">Mbps</span></div></div>'
       +'<div class="st-card"><div class="st-lbl">Peak UL</div><div class="st-val" id="'+prefix+'-pk-ul" style="color:var(--st-blue)">—<span class="st-unit">Mbps</span></div>'
       +'<div class="st-lbl" style="margin-top:0.4rem">Lowest UL</div><div class="st-val" id="'+prefix+'-lo-ul" style="color:var(--st-muted)">—<span class="st-unit">Mbps</span></div></div>'
       +'<div class="st-card"><div class="st-lbl">Best Loss</div><div class="st-val" id="'+prefix+'-bl" style="color:var(--st-green)">—<span class="st-unit">%</span></div>'
       +'<div class="st-lbl" style="margin-top:0.4rem">Worst Loss</div><div class="st-val" id="'+prefix+'-wl" style="color:#f44336">—<span class="st-unit">%</span></div></div>'
-      +'<div class="st-card srv"><div class="st-lbl">Server</div><div class="st-val" id="'+prefix+'-srv">—</div></div>'
+      +'<div class="st-card st-srv"><div class="st-lbl">Server</div><div class="st-val" id="'+prefix+'-srv">—</div></div>'
       +'</div>';
   }
   return ''
@@ -600,9 +648,22 @@ function buildHtml() {
     +'<div class="st-modal-opts">'
     +'<button class="st-modal-opt" id="st-clr-bb">📡 Broadband results only</button>'
     +'<button class="st-modal-opt" id="st-clr-vpn">🔒 VPN results only</button>'
-    +'<button class="st-modal-opt danger" id="st-clr-both">⚠ Clear both</button>'
-    +'<button class="st-modal-opt cancel" id="st-clr-cancel">✕ Cancel</button>'
+    +'<button class="st-modal-opt st-danger" id="st-clr-both">⚠ Clear both</button>'
+    +'<button class="st-modal-opt st-cancel" id="st-clr-cancel">✕ Cancel</button>'
     +'</div></div></div>'
+    // Header: identity and freshness. Actions live in their own row below.
+    +'<div class="st-head">'
+    +'<svg class="st-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+      // Static form of the live progress ring: dim track, bright fill, needle.
+      +'<path class="st-logo-track" d="M5 24a11 11 0 0 1 22 0"/>'
+      +'<path class="st-logo-arc" d="M5 24A11 11 0 0 1 22.31 14.99"/>'
+      +'<line class="st-logo-needle" x1="16" y1="24" x2="21.16" y2="16.63"/>'
+      +'<circle class="st-logo-hub" cx="16" cy="24" r="1.9"/>'
+    +'</svg>'
+    +'<h2 class="st-title">Speedtest</h2>'
+    +'<span class="st-last" id="st-last" title="Last broadband test"></span>'
+    +'<span class="st-last" id="wg-last" style="margin-left:0.55rem;color:#a78bfa" title="Last VPN test"></span>'
+    +'</div>'
     // Toolbar
     +'<div class="st-toolbar">'
     +ring('st-ring')
@@ -618,27 +679,25 @@ function buildHtml() {
     +'<span id="st-wg-timer" style="display:none;font-size:0.68rem;opacity:0.5"></span>'
     +'</button>'
     +'<button class="st-btn st-btn-clr" id="st-clr-btn">🗑 CLEAR</button>'
-    +'<span class="st-last" id="st-last" title="Last broadband test"></span>'
-    +'<span class="st-last" id="wg-last" style="margin-left:0.5rem;color:#a78bfa" title="Last VPN test"></span>'
     +'</div>'
     // Status & error
     +'<div id="st-status"></div>'
     +'<div id="st-error">⚠ Could not read results — your LuCI session may have expired. Reload the page.</div>'
     // Broadband section
     + statsCards('s')
-    +'<div class="st-chart-sec"><h3>Speed</h3><div class="st-chart-wrap"><canvas id="st-speed-chart"></canvas></div></div>'
+    + chartSec('Speed', 'st-speed-chart', [['Download','#00e676'],['Upload','#2979ff']])
     +'<div class="st-chart-row">'
-    +'<div class="st-chart-sec"><h3>Latency / Jitter</h3><div class="st-chart-wrap"><canvas id="st-lat-chart"></canvas></div></div>'
-    +'<div class="st-chart-sec"><h3>Packet Loss</h3><div class="st-chart-wrap"><canvas id="st-loss-chart"></canvas></div></div>'
+    + chartSec('Latency / Jitter', 'st-lat-chart', [['Latency','#ff9100'],['Jitter','#d500f9']])
+    + chartSec('Packet Loss', 'st-loss-chart', null)
     +'</div>'
     + resultsTable('bb')
     // WireGuard section
     +'<div class="st-wg-hdr"><h3>🔒 WireGuard VPN Test</h3></div>'
     + statsCards('wg')
-    +'<div class="st-chart-sec"><h3>VPN Speed</h3><div class="st-chart-wrap"><canvas id="wg-speed-chart"></canvas></div></div>'
+    + chartSec('VPN Speed', 'wg-speed-chart', [['Download','#00e676'],['Upload','#2979ff']])
     +'<div class="st-chart-row">'
-    +'<div class="st-chart-sec"><h3>VPN Latency / Jitter</h3><div class="st-chart-wrap"><canvas id="wg-lat-chart"></canvas></div></div>'
-    +'<div class="st-chart-sec"><h3>VPN Packet Loss</h3><div class="st-chart-wrap"><canvas id="wg-loss-chart"></canvas></div></div>'
+    + chartSec('VPN Latency / Jitter', 'wg-lat-chart', [['Latency','#ff9100'],['Jitter','#d500f9']])
+    + chartSec('VPN Packet Loss', 'wg-loss-chart', null)
     +'</div>'
     + resultsTable('wg');
 }
@@ -832,8 +891,11 @@ return view.extend({
     // Some LuCI themes toggle dark mode without a reload.
     if (!window._stThemeWatch) {
       window._stThemeWatch = true;
-      new MutationObserver(stApplyTheme).observe(document.documentElement,
-        { attributes: true, attributeFilter: ['data-darkmode', 'class'] });
+      // Guarded: a throw here would abort render() and blank the page.
+      try {
+        new window.MutationObserver(stApplyTheme).observe(document.documentElement,
+          { attributes: true, attributeFilter: ['data-darkmode', 'class'] });
+      } catch (e) {}
       try {
         window.matchMedia('(prefers-color-scheme: dark)')
               .addEventListener('change', stApplyTheme);
