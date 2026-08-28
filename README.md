@@ -238,3 +238,4 @@ GPL-2.0. Chart.js is bundled under the MIT licence.
 
 The Ookla Speedtest CLI is **not** included and is not covered by this licence —
 it's proprietary software with its own terms, which you accept when you run it.
+<img width="1637" height="1194" alt="image" src="https://github.com/user-attachments/assets/edcbe317-fabc-497c-95fb-203351339c71" />
